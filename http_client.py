@@ -6,6 +6,7 @@ import requests
 import time
 import threading
 import sys
+from multiprocessing import Queue
 
 if len(sys.argv) < 4:
     print('To few arguments; you need to specify 3 arguments.')
@@ -21,7 +22,7 @@ else:
 
 
 class MyThread(threading.Thread):
-    def __init__(self, name, counter):
+    def __init__(self, name, counter,que):
         threading.Thread.__init__(self)
         self.threadID = counter
         self.name = name
@@ -29,22 +30,23 @@ class MyThread(threading.Thread):
 
     def run(self):
         print("Starting " + self.name + str(self.counter))
-        workload(self.name + str(self.counter))
+        workload(self.name + str(self.counter),que)
 
 
-def workload(user):
+def workload(user,que):
     while True:
         t0 = time.time()
         requests.get('http://' + swarm_master_ip + ':443/')
         t1 = time.time()
         time.sleep(think_time)
-        print("Response Time for " + user + " = " + str(t1 - t0))
-
+        #que.put(t1 - t0)
+        print("Response Time for " + user + " = " + str(t1-t0))
 
 if __name__ == "__main__":
+    que=Queue(maxsize=20)
     threads = []
     for i in range(no_users):
-        threads.append(MyThread("User", i))
+        threads.append(MyThread("User", i ,que))
 
     for i in range(no_users):
         threads[i].start()
