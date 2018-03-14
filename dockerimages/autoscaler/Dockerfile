@@ -1,5 +1,10 @@
-FROM python3
+FROM python:3.5-alpine
 ADD . /code
 WORKDIR /code
-RUN pip install -r requirements.txt
-CMD ["python", "myapp.py"]
+RUN apk update supervisor
+RUN apk add supervisor
+RUN mkdir -p /var/log/supervisor
+ADD supervisord.conf /etc/supervisord.conf
+RUN pip3 install -r requirements.txt
+EXPOSE 5900 5900
+CMD ["/usr/bin/supervisord"]
