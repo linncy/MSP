@@ -37,6 +37,8 @@ def show():
                    response=[x[2] for x in res],
                    ma=[x[3] for x in res])  # 返回json格式数据
 
+def runserver():
+	app.run(host="0.0.0.0", port=5900, debug=True, threaded=True)
 
 if __name__ == "__main__":
    # app.run(debug=True)

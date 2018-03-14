@@ -40,9 +40,11 @@ def monitor():
 		print("t1-t0=",t1-t0)
 		responselist.insert(0,t1-t0)
 		tmpsum=0
+		print(responselist)
 		for j in range(i+1):
 			tmpsum+=responselist[j]
 		avg=tmpsum*1.0/(i+1)
+		print('avg=',avg)
 		time.sleep(1)
 		save_to_db((gettime(),t1-t0,avg))
 	while True:

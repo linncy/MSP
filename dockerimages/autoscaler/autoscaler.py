@@ -18,9 +18,12 @@ if __name__ == "__main__":
     port='443'
     threads = []
     threads.append(threading.Thread(target=monitor.monitor))
+    #threads.append(threading.Thread(target=response_visualizer.runserver))
     #threads.append(threading.Thread(target=response_visualizer.manager.run()))
     #threads.append(threading.Thread(target=calculator,args=[que]))
     for i in range(len(threads)):
         threads[i].start()
     for i in range(len(threads)):
         threads[i].join()
+    #print('a')
+    #response_visualizer.runserver()
