@@ -3,6 +3,7 @@ from flask import Flask
 import sqlite3
 from flask import request, render_template, jsonify
 import numpy as np
+import json
 k=2
 
 app = Flask(__name__)
@@ -27,13 +28,31 @@ def query_db(query, args=(), one=False):
 def index():
     return render_template("index.html")
 
+@app.route("/api", methods=["POST"])
+def api():
+  if request.method == "POST":
+    aRequest = request.get_data()
+    dictRequestdata = json.loads(aRequest)
+    if(dictRequestdata=={}):
+      res=query_db("SELECT * FROM sqlite_sequence")
+      return jsonify([x[1] for x in res])
+    else:
+    #return json.dumps(str(type(dictRequestdata['id'])))
+      res = query_db("SELECT * FROM response_time WHERE id>=(?)", args=(dictRequestdata['id'],))
+      return jsonify(response=[x[2] for x in res])
+    #malist=[x[3] for x in res]
+    #varlist=[x[4] for x in res]
+  #return jsonify(insert_time=[x[1] for x in res],
+                   #response=[x[2] for x in res],
+                   #ma=malist,
+                   #upperthreshold=(np.array(malist)+k*np.array(varlist)).tolist(),
+                   #lowerthreshold=(np.array(malist)-k*np.array(varlist)).tolist()) 
 
 @app.route("/show", methods=["POST"])
 def show():
   if request.method == "POST":
     res=query_db("SELECT * FROM sqlite_sequence")
     count=[x[1] for x in res][0]
-    print(type(count))
     res = query_db("SELECT * FROM response_time WHERE id>=(?)", args=(count-60,))
     malist=[x[3] for x in res]
     varlist=[x[4] for x in res]
