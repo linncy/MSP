@@ -8,9 +8,6 @@ import threading
 import sys
 from multiprocessing import Queue
 import monitor
-import response_visualizer
-
-
 
 if __name__ == "__main__":
     mutexA = threading.Lock()

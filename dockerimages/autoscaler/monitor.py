@@ -1,10 +1,11 @@
 import requests
 import sqlite3
 import pytz, time
+import numpy as np
 from datetime import datetime
 
 db_name = 'autoscaler_monitor.db'
-MA_par=20
+MA_par=10
 
 def gettime():
 	time.time()
@@ -17,14 +18,14 @@ def create_db():
     conn = sqlite3.connect(db_name)
     c = conn.cursor()
     c.execute('DROP TABLE IF EXISTS response_time')
-    c.execute('CREATE TABLE response_time (id INTEGER PRIMARY KEY AUTOINCREMENT, insert_time text,response_time float,ma float)')
+    c.execute('CREATE TABLE response_time (id INTEGER PRIMARY KEY AUTOINCREMENT, insert_time text,response_time float,ma float,var float)')
     conn.close()
 
 def save_to_db(response_timedata):
     #['00:01',4.16]
     conn = sqlite3.connect(db_name)
     c = conn.cursor()
-    c.execute('INSERT INTO response_time(insert_time,response_time,ma) VALUES (?,?,?)', response_timedata)
+    c.execute('INSERT INTO response_time(insert_time,response_time,ma,var) VALUES (?,?,?,?)', response_timedata)
     conn.commit()
     conn.close()
 
@@ -35,28 +36,22 @@ def monitor():
 	port='443'
 	for i in range(MA_par):
 		t0 = time.time()
-		requests.get('http://' + swarm_master_ip + ':'+port+'/')
-		t1 = time.time()
-		print("t1-t0=",t1-t0)
+		try:
+			requests.get('http://' + swarm_master_ip + ':'+port+'/')
+		except:
+			pass
+		t1=time.time()
 		responselist.insert(0,t1-t0)
-		tmpsum=0
-		print(responselist)
-		for j in range(i+1):
-			tmpsum+=responselist[j]
-		avg=tmpsum*1.0/(i+1)
-		print('avg=',avg)
 		time.sleep(1)
-		save_to_db((gettime(),t1-t0,avg))
+		save_to_db((gettime(),t1-t0,np.mean(responselist),np.std(responselist)))
 	while True:
 		t0 = time.time()
-		requests.get('http://' + swarm_master_ip + ':'+port+'/')
-		t1 = time.time()
-		print(responselist.pop())
+		try:
+			requests.get('http://' + swarm_master_ip + ':'+port+'/')
+		except:
+			pass
+		t1=time.time()
+		responselist.pop()
 		responselist.insert(0,t1-t0)
-		tmpsum=0
-		for j in range(MA_par):
-			tmpsum+=responselist[j]
-		ma=tmpsum*1.0/MA_par
-		print('ma=',ma)
 		time.sleep(1)
-		save_to_db((gettime(),t1-t0,ma))
+		save_to_db((gettime(),t1-t0,np.mean(responselist),np.std(responselist)))

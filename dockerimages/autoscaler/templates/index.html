@@ -17,11 +17,11 @@
     
     myChart.setOption({
         title: {
-            text: 'Response Monitor'
+            text: 'Response Monitor2'
         },
         tooltip: {},
         legend: {
-            data:['Response Time','MA']
+            data:['Response Time','MA','Upper Threshold','Lower Threshold']
         },
         xAxis: {
             data: []
@@ -35,6 +35,15 @@
             name: 'MA',
             type: 'line',
             data: []
+        },{
+            name: 'Upper Threshold',
+            type: 'line',
+            data: []
+        }
+        ,{
+            name: 'Lower Threshold',
+            type: 'line',
+            data: []
         }]
     });
     
@@ -43,6 +52,8 @@
     var insert_time = ["","","","","","","","","",""],
         response = [0,0,0,0,0,0,0,0,0,0],
         ma = [0,0,0,0,0,0,0,0,0,0],
+        upperthreshold = [0,0,0,0,0,0,0,0,0,0],
+        lowerthreshold = [0,0,0,0,0,0,0,0,0,0],
         lastID = 0; // 哨兵，记录上次数据表中的最后id +1（下次查询只要>=lastID）
 
     
@@ -58,6 +69,8 @@
         insert_time = insert_time.slice(dataLength).concat(data.insert_time); // 数组，先切片、再拼接
         response = response.slice(dataLength).concat(data.response.map(parseFloat)); //注意map方法
         ma = ma.slice(dataLength).concat(data.ma.map(parseFloat));
+        upperthreshold = upperthreshold.slice(dataLength).concat(data.upperthreshold.map(parseFloat));
+        lowerthreshold = lowerthreshold.slice(dataLength).concat(data.lowerthreshold.map(parseFloat));
         
         // 填入数据
         myChart.setOption({
@@ -70,6 +83,12 @@
             },{
                 name: 'MA',
                 data: ma
+            },{
+                name: 'Upper Threshold',
+                data: upperthreshold
+            },{
+                name: 'Lower Threshold',
+                data: lowerthreshold
             }]
         });
         
