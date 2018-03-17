@@ -17,7 +17,6 @@ def get_db():
 def query_db(query, args=(), one=False):
     db = get_db()
     cur = db.execute(query, args)
-    # cur = db.execute("SELECT * FROM cpu WHERE id>=1")
     db.commit()
     rv = cur.fetchall()
     db.close()
@@ -32,21 +31,13 @@ def index():
 def api():
   if request.method == "POST":
     aRequest = request.get_data()
-    dictRequestdata = json.loads(aRequest)
+    dictRequestdata = json.loads(aRequest.decode("utf-8"))
     if(dictRequestdata=={}):
       res=query_db("SELECT * FROM sqlite_sequence")
       return jsonify([x[1] for x in res])
     else:
-    #return json.dumps(str(type(dictRequestdata['id'])))
       res = query_db("SELECT * FROM response_time WHERE id>=(?)", args=(dictRequestdata['id'],))
       return jsonify(response=[x[2] for x in res])
-    #malist=[x[3] for x in res]
-    #varlist=[x[4] for x in res]
-  #return jsonify(insert_time=[x[1] for x in res],
-                   #response=[x[2] for x in res],
-                   #ma=malist,
-                   #upperthreshold=(np.array(malist)+k*np.array(varlist)).tolist(),
-                   #lowerthreshold=(np.array(malist)-k*np.array(varlist)).tolist()) 
 
 @app.route("/show", methods=["POST"])
 def show():
@@ -66,5 +57,4 @@ def runserver():
 	app.run(host="0.0.0.0", port=5900, debug=True, threaded=True)
 
 if __name__ == "__main__":
-   # app.run(debug=True)
    app.run(host="0.0.0.0", port=5900, debug=True)
