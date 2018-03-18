@@ -128,3 +128,5 @@ def classifier():
 		if(np.max(malist[-5:])<lowerthreshold):
 			isSurplus(response)
 		#--------------
+if __name__ == "__main__":
+    classifier()
