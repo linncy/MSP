@@ -80,12 +80,15 @@ def isSurplus(response):
 			break
 	newresponse=[x[2] for x in res]
 	print('surplus count2=',newresponse)
-	if(newresponse[-1]>upperthreshold or newresponse[-2]>upperthreshold):
+	if(np.max(newresponse)>upperthreshold):
 		md=docker.types.ServiceMode('replicated',replicas=replicas_now)
 		client.services.get('app_web').update(mode=md)
+		lastaction=getlastid()
+		lastsurge=lastaction #prevent isSurge caused by Surplus Try
+		print('Surplus Cancelled')
 	else:   
 		lastaction=getlastid()
-		print('lastaction by is Surplus',lastaction)
+		print('Surplus Confirmed',lastaction)
         
 def plateau():
 	return 0
@@ -96,9 +99,9 @@ def slump():
 def classifier():
 	global lastaction
 	global lastsurge
+	time.sleep(5)
 	lastaction=getlastid()
 	lastsurge=lastaction
-	time.sleep(5)
 	while True:
 		time.sleep(0.2)
 		count=getlastid()
