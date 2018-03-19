@@ -82,17 +82,16 @@ def action():
     replicaslist=[x[3] for x in res]
     criterionlist=[x[4] for x in res]
     lastactionidlist=[x[5] for x in res]
-    newstr=''
+    newstr='<html><body><table border="1"><tr><th>ID</th><th>Action</th><th>Replicas</th><th>Criterion</th><th>Last Action ID</th></tr><tr>'
     for i in range(len(idlist)):
-        newstr+=str(idlist[i])+'                '
-        newstr+=str(actionlist[i])+'                '
-        newstr+=str(replicaslist[i])+'              '
-        newstr+=str(criterionlist[i])+'             '
-        newstr+=str(lastactionidlist[i])+'              '
-        newstr+='<br/>'
+        newstr+='<td>'+str(idlist[i])+'</td>'
+        newstr+='<td>'+str(actionlist[i])+'</td>'
+        newstr+='<td>'+str(replicaslist[i])+'</td>'
+        newstr+='<td>'+str(criterionlist[i])+'</td>'
+        newstr+='<td>'+str(lastactionidlist[i])+'</td>'
+        newstr+='</tr>'
+    newstr+='</table></body></html>'
     return newstr
-    #return jsonify(idlist=idlist,timelist=timelist,actionlist=actionlist,replicaslist=replicaslist,criterionlist=criterionlist,lastactionidlist=lastactionidlist)
-
 def runserver():
     app.run(host="0.0.0.0", port=5900, debug=True, threaded=True)
 

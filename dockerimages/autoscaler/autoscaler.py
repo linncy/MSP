@@ -1,8 +1,3 @@
-"""
-HTTP client simulator. It simulate a number of concurrent users and calculate the response time for each request.
-"""
-
-
 import time
 import threading
 import sys

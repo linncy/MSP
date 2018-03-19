@@ -17,6 +17,29 @@
         title: {
             text: 'Response Monitor'
         },
+        toolbox:{
+            show:true,
+            feature:
+            {
+                dataView:{
+                    show:true
+                },
+                restore:{
+                    show:true
+                },
+                dataZoom:{
+                    show:true
+                },
+                saveAsImage:
+                {
+                    show:true
+                },
+                magicType:
+                {
+                    type:['bar','line']
+                }
+            }
+        },
         tooltip: {},
         legend: {
             data:['Response Time','MA','Upper Threshold','Lower Threshold']
@@ -92,6 +115,6 @@
     }, 3000);
     
     </script>
-   <div > <iframe id="table" src="/action" width="800" height="500"></iframe></div>
+   <div > <iframe id="table" src="/action" width="800" height="800"></iframe></div>
 </body>
 </html>

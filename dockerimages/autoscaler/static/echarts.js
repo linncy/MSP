@@ -21064,7 +21064,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        },
 
 	        /**
-	         * 刷新
+	         * Refresh
 	         * @param {boolean} [paintAll=false] 强制绘制所有displayable
 	         */
 	        refresh: function (paintAll) {
@@ -32117,7 +32117,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            // If use strategy to avoid label overlapping
 	            avoidLabelOverlap: true,
-	            // 选择模式，默认关闭，可选single，multiple
+	            // 选择模式，默认Close，可选single，multiple
 	            // selectedMode: false,
 	            // 南丁格尔玫瑰图模式，'radius'（半径） | 'area'（面积）
 	            // roseType: null,
@@ -34723,7 +34723,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	            // 显示图例颜色标识（系列标识的小圆点），图例开启时有效
 	            showLegendSymbol: true,
-	            // 选择模式，默认关闭，可选single，multiple
+	            // 选择模式，默认Close，可选single，multiple
 	            // selectedMode: false,
 	            dataRangeHoverLink: true,
 	            // 是否开启缩放及漫游模式
@@ -57376,7 +57376,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            // 图例图形高度
 	            itemHeight: 14,
 
-	            // 图例关闭时候的颜色
+	            // 图例Close时候的颜色
 	            inactiveColor: '#ccc',
 
 	            textStyle: {
@@ -72540,14 +72540,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    SaveAsImage.defaultOption = {
 	        show: true,
 	        icon: 'M4.7,22.9L29.3,45.5L54.7,23.4M4.6,43.6L4.6,58L53.8,58L53.8,43.6M29.2,45.1L29.2,0',
-	        title: '保存为图片',
+	        title: 'Save as PNG',
 	        type: 'png',
 	        // Default use option.backgroundColor
 	        // backgroundColor: '#fff',
 	        name: '',
 	        excludeComponents: ['toolbox'],
 	        pixelRatio: 1,
-	        lang: ['右键另存为图片']
+	        lang: ['Download PNG']
 	    };
 
 	    SaveAsImage.prototype.unusable = !env.canvasSupported;
@@ -72621,8 +72621,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            tiled: 'M2.3,2.2h22.8V25H2.3V2.2z M35,2.2h22.8V25H35V2.2zM2.3,35h22.8v22.8H2.3V35z M35,35h22.8v22.8H35V35z'
 	        },
 	        title: {
-	            line: '切换为折线图',
-	            bar: '切换为柱状图',
+	            line: 'Line Chart',
+	            bar: 'Bar Chart',
 	            stack: '切换为堆叠',
 	            tiled: '切换为平铺'
 	        },
@@ -73060,8 +73060,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	        contentToOption: null,
 
 	        icon: 'M17.5,17.3H33 M17.5,17.3H33 M45.4,29.5h-28 M11.5,2v56H51V14.8L38.4,2H11.5z M38.4,2.2v12.7H51 M45.4,41.7h-28',
-	        title: '数据视图',
-	        lang: ['数据视图', '关闭', '刷新'],
+	        title: 'DataView',
+	        lang: ['DataView', 'Close', 'Refresh'],
 	        backgroundColor: '#fff',
 	        textColor: '#000',
 	        textareaColor: '#fff',
@@ -73306,8 +73306,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	            back: 'M22,1.4L9.9,13.5l12.3,12.3 M10.3,13.5H54.9v44.6 H10.3v-26'
 	        },
 	        title: {
-	            zoom: '区域缩放',
-	            back: '区域缩放还原'
+	            zoom: 'Zoom',
+	            back: 'Zoom Reset'
 	        }
 	    };
 
@@ -74983,7 +74983,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        },
 
 	        /**
-	         * 刷新
+	         * Refresh
 	         */
 	        refresh: function () {
 

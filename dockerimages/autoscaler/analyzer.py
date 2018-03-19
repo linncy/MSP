@@ -90,7 +90,7 @@ def isSurge(response,malist,stdlist):
 	client.services.get('app_web').update(mode=md)
 	lastaction=getlastid()
 	lastsurge=lastaction
-	cri='Response: '+str(response[-2])+' MA:'+str(malist[-2:])+' stdev: '+str(stdlist[-2:])
+	cri='Response: '+str(response[-2])+' MA:'+str(np.round(malist[-2:],3).tolist())+' stdev: '+str(np.round(stdlist[-2:],3).tolist())
 	save_to_log_db((gettime(),'Scale Up: Surge',replicas_new,cri,lastaction))
 	print('lastaction by is Surge',lastaction)
 
@@ -102,7 +102,7 @@ def isAscend(response,malist,stdlist):
 	md=docker.types.ServiceMode('replicated',replicas=replicas_new)
 	client.services.get('app_web').update(mode=md)
 	lastaction=getlastid()
-	cri='min in MA: '+str(malist[-5:])+ ' > upperthreshold'
+	cri='min in MA: '+str(np.round(malist[-5:],3).tolist())+ ' > upperthreshold'
 	save_to_log_db((gettime(),'Scale Up: Ascend',replicas_new,cri,lastaction))
 
 def isSurplus(response,malist,stdlist):
@@ -131,12 +131,12 @@ def isSurplus(response,malist,stdlist):
 		client.services.get('app_web').update(mode=md)
 		lastaction=getlastid()
 		lastsurge=lastaction #prevent isSurge caused by Surplus Try
-		cri='max in Response'+str(newresponse)+ ' > upperthreshold'
+		cri='max in Response'+str(np.round(newresponse,3).tolist())+ ' > upperthreshold'
 		save_to_log_db((gettime(),'Do Nothing: Surplus Cancelled',replicas_now,cri,lastaction))
 	else:   
 		lastaction=getlastid()
 		print('Surplus Confirmed',lastaction)
-		cri='max in MA'+str(malist[-5:])+ ' < lowerreshold'
+		cri='max in MA'+str(np.round(malist[-5:],3).tolist())+ ' < lowerreshold'
 		save_to_log_db((gettime(),'Scale Down: Surplus',replicas_new,cri,lastaction))
         
 def plateau():
