@@ -15,7 +15,7 @@
     
     myChart.setOption({
         title: {
-            text: 'Response Monitor2'
+            text: 'Response Monitor'
         },
         tooltip: {},
         legend: {
@@ -54,7 +54,7 @@
     var update_mychart = function (data) { 
         
         myChart.hideLoading(); 
-        
+        document.getElementById("table").src="/action";
         dataLength = data.insert_time.length; 
         lastID += dataLength; 
         insert_time = insert_time.slice(dataLength).concat(data.insert_time); 
@@ -92,5 +92,6 @@
     }, 3000);
     
     </script>
+   <div > <iframe id="table" src="/action" width="800" height="500"></iframe></div>
 </body>
 </html>

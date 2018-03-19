@@ -149,6 +149,7 @@ def classifier():
 	global lastaction
 	global lastsurge
 	create_log_db()
+	save_to_log_db((gettime(),'Initialize','Initialize','Initialize','Initialize'))
 	time.sleep(5)
 	lastaction=getlastid()
 	lastsurge=lastaction
