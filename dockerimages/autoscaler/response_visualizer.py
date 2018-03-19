@@ -53,6 +53,10 @@ def show():
                    upperthreshold=(np.array(malist)+k*np.array(varlist)).tolist(),
                    lowerthreshold=(np.array(malist)-k*np.array(varlist)).tolist()) 
 
+@app.route("/action")
+def action():
+	return 'hello!'
+
 def runserver():
     app.run(host="0.0.0.0", port=5900, debug=True, threaded=True)
 

@@ -2,6 +2,8 @@ import time
 import sqlite3
 import numpy as np
 import docker
+import pytz
+from datetime import datetime
 
 SCALE_APP_NAME='app_web'
 actioninterval=17
@@ -12,6 +14,46 @@ global lastsurge
 k=2
 base_url='tcp://10.8.47.180:6732'
 client=docker.DockerClient(base_url,version='1.26')
+
+def gettime():
+	time.time()
+	tz  = pytz.timezone('America/Edmonton')
+	newdatetime=datetime.fromtimestamp(time.time(), tz)
+	format = "%H:%M:%S"
+	return(newdatetime.strftime(format))
+
+def create_log_db():
+    conn = sqlite3.connect('log.db')
+    c = conn.cursor()
+    c.execute('DROP TABLE IF EXISTS log')
+    c.execute('CREATE TABLE log (id INTEGER PRIMARY KEY AUTOINCREMENT, insert_time text, action text, replicas INTEGER, criterion text, lastactionid INTEGER)')
+    conn.close()
+
+def save_to_log_db(logdata):
+    #['00:01',4.16]
+    conn = sqlite3.connect('log.db')
+    c = conn.cursor()
+    c.execute('INSERT INTO log(insert_time,action,replicas,criterion,lastactionid) VALUES (?,?,?,?,?)', logdata)
+    conn.commit()
+    conn.close()
+
+def get_log_db():
+    db = sqlite3.connect('log.db')
+    db.row_factory = sqlite3.Row
+    return db
+
+def query_log_db(query, args=(), one=False):
+    db = get_log_db()
+    cur = db.execute(query, args)
+    db.commit()
+    rv = cur.fetchall()
+    db.close()
+    return (rv[0] if rv else None) if one else rv
+
+def get_log_lastid():
+	res=query_log_db("SELECT * FROM sqlite_sequence")
+	count=[x[1] for x in res][0]
+	return count
 
 def get_db():
     db = sqlite3.connect('autoscaler_monitor.db')
@@ -31,7 +73,7 @@ def getlastid():
 	count=[x[1] for x in res][0]
 	return count
 
-def isSurge(response):
+def isSurge(response,malist,stdlist):
 	global lastaction
 	global lastsurge
 	print('surge!')
@@ -48,9 +90,11 @@ def isSurge(response):
 	client.services.get('app_web').update(mode=md)
 	lastaction=getlastid()
 	lastsurge=lastaction
+	cri='Response: '+str(response[-2])+' MA:'+str(malist[-2:])+' stdev: '+str(stdlist[-2:])
+	save_to_log_db((gettime(),'Scale Up: Surge',replicas_new,cri,lastaction))
 	print('lastaction by is Surge',lastaction)
 
-def isAscend(response):
+def isAscend(response,malist,stdlist):
 	global lastaction
 	print('ascend!')
 	replicas_now=client.services.get(SCALE_APP_NAME).attrs['Spec']['Mode']['Replicated']['Replicas']
@@ -58,8 +102,10 @@ def isAscend(response):
 	md=docker.types.ServiceMode('replicated',replicas=replicas_new)
 	client.services.get('app_web').update(mode=md)
 	lastaction=getlastid()
+	cri='min in MA: '+str(malist[-5:])+ ' > upperthreshold'
+	save_to_log_db((gettime(),'Scale Up: Ascend',replicas_new,cri,lastaction))
 
-def isSurplus(response):
+def isSurplus(response,malist,stdlist):
 	global lastaction
 	global lastsurge
 	print('surplus!')
@@ -85,10 +131,13 @@ def isSurplus(response):
 		client.services.get('app_web').update(mode=md)
 		lastaction=getlastid()
 		lastsurge=lastaction #prevent isSurge caused by Surplus Try
-		print('Surplus Cancelled')
+		cri='max in Response'+str(newresponse)+ ' > upperthreshold'
+		save_to_log_db((gettime(),'Do Nothing: Surplus Cancelled',replicas_now,cri,lastaction))
 	else:   
 		lastaction=getlastid()
 		print('Surplus Confirmed',lastaction)
+		cri='max in MA'+str(malist[-5:])+ ' < lowerreshold'
+		save_to_log_db((gettime(),'Scale Down: Surplus',replicas_new,cri,lastaction))
         
 def plateau():
 	return 0
@@ -99,6 +148,7 @@ def slump():
 def classifier():
 	global lastaction
 	global lastsurge
+	create_log_db()
 	time.sleep(5)
 	lastaction=getlastid()
 	lastsurge=lastaction
@@ -113,7 +163,7 @@ def classifier():
 		if(count-lastsurge>2):
 			if(response[-1]>malist[-1]+k*stdlist[-1] or response[-2]>malist[-2]+k*stdlist[-2] ):
 				if(response[-1]>upperthreshold and response[-2]>upperthreshold):
-					isSurge(response)
+					isSurge(response,malist,stdlist)
 					continue
 		#--------------
 		#Action Interval
@@ -122,11 +172,11 @@ def classifier():
 		#--------------
 		#isAscend------
 		if(np.min(malist[-5:])>upperthreshold):
-			isAscend(response)
+			isAscend(response,malist,stdlist)
 		#--------------
 		#isSurplus-----
 		if(np.max(malist[-5:])<lowerthreshold):
-			isSurplus(response)
+			isSurplus(response,malist,stdlist)
 		#--------------
 if __name__ == "__main__":
     classifier()
