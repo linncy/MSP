@@ -149,7 +149,7 @@ def classifier():
 	global lastaction
 	global lastsurge
 	create_log_db()
-	save_to_log_db((gettime(),'Initialize','Initialize','Initialize','Initialize'))
+	save_to_log_db((gettime(),'Initialize: Wait 5 seconds',client.services.get(SCALE_APP_NAME).attrs['Spec']['Mode']['Replicated']['Replicas'],'Initialize','Initialize'))
 	time.sleep(5)
 	lastaction=getlastid()
 	lastsurge=lastaction

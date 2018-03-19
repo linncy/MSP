@@ -1,7 +1,7 @@
 from flask.ext.script import Manager
 from flask import Flask
 import sqlite3
-from flask import request, render_template, jsonify
+from flask import request, render_template, jsonify,make_response,send_file
 import numpy as np
 import json
 import time
@@ -93,6 +93,20 @@ def action():
         newstr+='</tr>'
     newstr+='</table></body></html>'
     return newstr
+
+@app.route('/resdb', methods=['GET'])
+def resdb():
+    response = make_response(send_file("autoscaler_monitor.db"))
+    response.headers["Content-Disposition"] = "attachment; filename=autoscaler_monitor.db;"
+    return response
+
+@app.route('/logdb', methods=['GET'])
+def logdb():
+    response = make_response(send_file("log.db"))
+    response.headers["Content-Disposition"] = "attachment; filename=log.db;"
+    return response
+
+
 def runserver():
     app.run(host="0.0.0.0", port=5900, debug=True, threaded=True)
 
