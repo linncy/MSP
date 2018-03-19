@@ -75,16 +75,17 @@ def show():
 @app.route("/action")
 def action():
     actionid=get_log_lastid()
-    res = query_log_db("SELECT * FROM log WHERE id>=(?)", args=(actionid-10,))
+    res = query_log_db("SELECT * FROM log WHERE id>=(?)", args=(actionid-9,))
     idlist=[x[0] for x in res]
     timelist=[x[1] for x in res]
     actionlist=[x[2] for x in res]
     replicaslist=[x[3] for x in res]
     criterionlist=[x[4] for x in res]
     lastactionidlist=[x[5] for x in res]
-    newstr='<html><body><table border="1"><tr><th>ID</th><th>Action</th><th>Replicas</th><th>Criterion</th><th>Last Action ID</th></tr><tr>'
+    newstr='<html><body><table border="1"><tr><th>ID</th><th>Time</th><th>Action</th><th>Replicas</th><th>Criterion</th><th>Last Action ID</th></tr><tr>'
     for i in range(len(idlist)):
         newstr+='<td>'+str(idlist[i])+'</td>'
+        newstr+='<td>'+str(timelist[i])+'</td>'
         newstr+='<td>'+str(actionlist[i])+'</td>'
         newstr+='<td>'+str(replicaslist[i])+'</td>'
         newstr+='<td>'+str(criterionlist[i])+'</td>'
