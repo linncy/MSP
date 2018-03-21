@@ -99,6 +99,8 @@ def isAscend(response,malist,stdlist):
 	print('ascend!')
 	replicas_now=client.services.get(SCALE_APP_NAME).attrs['Spec']['Mode']['Replicated']['Replicas']
 	replicas_new=replicas_now+1
+	if(replicas_new>8):
+		replicas_new=8
 	md=docker.types.ServiceMode('replicated',replicas=replicas_new)
 	client.services.get('app_web').update(mode=md)
 	lastaction=getlastid()
